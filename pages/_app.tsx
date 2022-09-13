@@ -6,7 +6,20 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 function MyApp({ Component, pageProps }: AppProps) {
   const client = new ApolloClient({
     uri: 'https://beta.pokeapi.co/graphql/v1beta',
-    cache: new InMemoryCache({}),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            pokemon_v2_pokemonspecies: {
+              keyArgs: false,
+              merge(existing = [], incoming) {
+                return [...existing, ...incoming];
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 
   return (

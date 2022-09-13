@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { Box, Spinner, Text } from '@chakra-ui/react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { PokemonPreview } from '../component/PokemonPreview';
 
 type PokemonData = {
   color: {
@@ -36,7 +37,7 @@ const getPokemonData = gql`
   query getPokemonList($offset: Int) {
     pokemonList: pokemon_v2_pokemonspecies(
       order_by: { id: asc }
-      limit: 100
+      limit: 20
       offset: $offset
     ) {
       id
@@ -63,6 +64,7 @@ const getPokemonData = gql`
 `;
 
 function HomePageContainer() {
+  const [offset, setOffset] = useState(0);
   const { loading, error, data, fetchMore } = useQuery<
     AllPokemonResultType,
     AllPokemonFilter
@@ -71,21 +73,30 @@ function HomePageContainer() {
   });
   const observer = useRef<IntersectionObserver | null>(null);
 
-  const lastBookElementRef = useCallback(
+  const lastDataRef = useCallback(
     (node: HTMLHeadingElement | null) => {
       if (loading) return;
-      if (observer.current) observer.current.disconnect();
+      if (observer.current) {
+        observer.current.disconnect();
+      }
       observer.current = new IntersectionObserver((entries) => {
         if (
           entries[0].isIntersecting &&
           data?.species_aggregate.aggregate.count !== data?.pokemonList.length
         ) {
-          console.log('Hey');
+          // console.log('Hey');
+          setOffset((v) => {
+            const current = v + 20;
+            fetchMore({ variables: { offset: current } });
+            return current;
+          });
         }
       });
-      if (node) observer.current.observe(node);
+      if (node) {
+        observer.current.observe(node);
+      }
     },
-    [loading, data]
+    [loading, data, fetchMore]
   );
 
   return (
@@ -94,12 +105,14 @@ function HomePageContainer() {
         {data?.pokemonList.map((pokemon, index) => {
           if (data.pokemonList.length === index + 1) {
             return (
-              <h1 ref={lastBookElementRef} key={pokemon.id}>
-                {pokemon.name}
-              </h1>
+              <PokemonPreview
+                ref={lastDataRef}
+                pokemon={pokemon}
+                key={pokemon.id}
+              />
             );
           }
-          return <h1 key={pokemon.id}>{pokemon.name}</h1>;
+          return <PokemonPreview pokemon={pokemon} key={pokemon.id} />;
         })}
         {loading && <Spinner />}
         {error && <Text>{error.stack}</Text>}
