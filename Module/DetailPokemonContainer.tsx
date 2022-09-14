@@ -15,7 +15,10 @@ const getPokemonDetail = gql`
     ) {
       id
       name
-      description: pokemon_v2_pokemonspeciesflavortexts(limit: 1) {
+      description: pokemon_v2_pokemonspeciesflavortexts(
+        limit: 1
+        where: { pokemon_v2_language: { name: { _eq: "en" } } }
+      ) {
         text: flavor_text
       }
       is_mythical
