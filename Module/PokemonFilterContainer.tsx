@@ -15,8 +15,8 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import router from 'next/router';
-import { useRef, useState } from 'react';
+import router, { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
 const GetFilterList = gql`
   {
@@ -40,10 +40,26 @@ function PokemonFilterContainer() {
     typeList: Array<{ name: string }>;
   }>(GetFilterList);
 
+  const router = useRouter();
+
   const [selected, setSelected] = useState<SelectedStateType>({});
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = useRef(null);
+  const handleFilter = () => {
+    router.replace(
+      {
+        href: '/',
+        query: {
+          type: selected.type ? Object.keys(selected.type) : [],
+          generation: selected.generation
+            ? Object.keys(selected.generation)
+            : [],
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
+    onClose();
+  };
 
   const handleSelected = (type: 'type' | 'generation', data: string) => {
     if (selected[type]?.[data]) {
@@ -57,20 +73,33 @@ function PokemonFilterContainer() {
     }
   };
 
-  const handleFilter = () => {
-    router.replace({
-      href: '/',
-      query: {
-        type: selected.type ? Object.keys(selected.type) : [],
-        generation: selected.generation ? Object.keys(selected.generation) : [],
-      },
-    });
-    onClose();
-  };
+  useEffect(() => {
+    if (Array.isArray(router.query.generation)) {
+      router.query.generation.forEach((val) =>
+        setSelected((v) => ({
+          ...v,
+          type: { ...v['generation'], [val]: val },
+        }))
+      );
+    }
+    if (Array.isArray(router.query.type)) {
+      router.query.type.forEach((val) =>
+        setSelected((v) => ({ ...v, type: { ...v['type'], [val]: val } }))
+      );
+    }
+  }, [router.query]);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = useRef(null);
 
   return (
     <>
-      <Button ref={btnRef} onClick={onOpen} leftIcon={<AddIcon />}>
+      <Button
+        isLoading={loading}
+        ref={btnRef}
+        onClick={onOpen}
+        leftIcon={<AddIcon />}
+      >
         Filter
       </Button>
       <Drawer
@@ -90,6 +119,7 @@ function PokemonFilterContainer() {
               {data?.typeList.map((type) => (
                 <WrapItem key={type.name}>
                   <Badge
+                    cursor={'pointer'}
                     onClick={() => handleSelected('type', type.name)}
                     borderRadius={'lg'}
                     p="1"
@@ -106,6 +136,7 @@ function PokemonFilterContainer() {
               {data?.generationList.map((generation) => (
                 <WrapItem key={generation.name}>
                   <Badge
+                    cursor={'pointer'}
                     onClick={() =>
                       handleSelected('generation', generation.name)
                     }
