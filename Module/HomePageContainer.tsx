@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { Box, Grid, Spinner, Text, VStack } from '@chakra-ui/react';
+import { Box, Grid, Link, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useCallback, useRef, useState } from 'react';
 import { PokemonPreview } from '../component/PokemonPreview';
 
@@ -11,7 +11,7 @@ type PokemonType = {
   }>;
 };
 
-type PokemonData = {
+type PokemonData<TypePokemon> = {
   color: {
     name: string;
   };
@@ -19,7 +19,7 @@ type PokemonData = {
   name: string;
   is_mythical: boolean;
   is_legendary: boolean;
-  pokemons_detail: Array<PokemonType>;
+  pokemons_detail: Array<TypePokemon>;
 };
 
 type AllPokemonFilter = {
@@ -27,7 +27,7 @@ type AllPokemonFilter = {
 };
 
 type AllPokemonResultType = {
-  pokemonList: Array<PokemonData>;
+  pokemonList: Array<PokemonData<PokemonType>>;
   species_aggregate: {
     aggregate: {
       count: number;
@@ -107,9 +107,9 @@ function HomePageContainer() {
           if (data.pokemonList.length === index + 1) {
             return (
               <PokemonPreview
+                key={pokemon.id}
                 ref={lastDataRef}
                 pokemon={pokemon}
-                key={pokemon.id}
               />
             );
           }

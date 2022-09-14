@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { HomePageContainer } from '../Module/HomePageContainer';
+import router, { useRouter } from 'next/router';
+import { DetailPokemon } from '../../Module/DetailPokemonContainer';
 
-const Home: NextPage = () => {
+const PokemonDetailPage: NextPage = () => {
   return (
     <div>
       <Head>
@@ -10,9 +11,9 @@ const Home: NextPage = () => {
         <meta name="description" content="Pokedex Adam" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <HomePageContainer />
+      <DetailPokemon />
     </div>
   );
 };
 
-export default Home;
+export default PokemonDetailPage;
