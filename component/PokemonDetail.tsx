@@ -72,7 +72,7 @@ function PokemonDetailViewer({ pokemonDetail }: Props) {
               colorScheme="purple"
               borderRadius={'lg'}
               value={stat.base_stat}
-              max={100}
+              max={200}
               width="100%"
             />
           </VStack>

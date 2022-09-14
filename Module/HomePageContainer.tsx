@@ -1,7 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
-import { Box, Grid, Link, Spinner, Text, VStack } from '@chakra-ui/react';
+import { Grid, Spinner, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useCallback, useRef, useState } from 'react';
 import { PokemonPreview } from '../component/PokemonPreview';
+import { PokemonFilterContainer } from './PokemonFilterContainer';
 
 type PokemonType = {
   pokemon_type: Array<{
@@ -24,6 +26,8 @@ type PokemonData<TypePokemon> = {
 
 type AllPokemonFilter = {
   offset: number;
+  type: Array<string>;
+  generation: Array<string>;
 };
 
 type AllPokemonResultType = {
@@ -35,43 +39,68 @@ type AllPokemonResultType = {
   };
 };
 
-const getPokemonData = gql`
-  query getPokemonList($offset: Int) {
-    pokemonList: pokemon_v2_pokemonspecies(
-      order_by: { id: asc }
-      limit: 20
-      offset: $offset
-    ) {
-      id
-      name
-      is_mythical
-      is_legendary
-      pokemons_detail: pokemon_v2_pokemons {
-        pokemon_type: pokemon_v2_pokemontypes {
-          type: pokemon_v2_type {
-            name
-          }
-        }
-      }
-      color: pokemon_v2_pokemoncolor {
-        name
-      }
-    }
-    species_aggregate: pokemon_v2_pokemonspecies_aggregate {
-      aggregate {
-        count
-      }
-    }
-  }
-`;
-
 function HomePageContainer() {
   const [offset, setOffset] = useState(0);
+  const router = useRouter();
+  const getPokemonData = gql`
+    query getPokemonList(
+      $offset: Int
+      $type: [String!]
+      $generation: [String!]
+    ) {
+      pokemonList: pokemon_v2_pokemonspecies(
+        order_by: { id: asc }
+        limit: 20
+        offset: $offset
+        where: {
+        ${
+          router.query.type
+            ? `
+          pokemon_v2_pokemons: {
+            pokemon_v2_pokemontypes: {
+              pokemon_v2_type: { name: { _in: $type } }
+            }
+          }`
+            : ''
+        }
+        ${
+          router.query.generation
+            ? `          pokemon_v2_generation: { name: { _in: $generation } }`
+            : ''
+        }
+        }
+      ) {
+        id
+        name
+        is_mythical
+        is_legendary
+        pokemons_detail: pokemon_v2_pokemons {
+          pokemon_type: pokemon_v2_pokemontypes {
+            type: pokemon_v2_type {
+              name
+            }
+          }
+        }
+        color: pokemon_v2_pokemoncolor {
+          name
+        }
+      }
+      species_aggregate: pokemon_v2_pokemonspecies_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
   const { loading, error, data, fetchMore } = useQuery<
     AllPokemonResultType,
     AllPokemonFilter
   >(getPokemonData, {
-    variables: { offset: 0 },
+    variables: {
+      offset: 0,
+      generation: router.query.generation as Array<string>,
+      type: router.query.type as Array<string>,
+    },
   });
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -102,6 +131,7 @@ function HomePageContainer() {
 
   return (
     <VStack>
+      <PokemonFilterContainer />
       <Grid w="100%" maxWidth={'2xl'} templateColumns="repeat(2, 1fr)" gap={2}>
         {data?.pokemonList.map((pokemon, index) => {
           if (data.pokemonList.length === index + 1) {

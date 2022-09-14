@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { HStack, Spinner, VStack } from '@chakra-ui/react';
+import { Spinner, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { PokemonPreview } from '../component/PokemonPreview';
 import { PokemonData, PokemonType } from './HomePageContainer';
@@ -84,7 +84,7 @@ type PokemonDetail = PokemonData<PokemonAbility & PokemonType> & {
 function DetailPokemon() {
   const router = useRouter();
 
-  const { loading, error, data, fetchMore } = useQuery<
+  const { loading, error, data } = useQuery<
     { pokemonList: Array<PokemonDetail> },
     AllPokemonFilter
   >(getPokemonDetail, {
