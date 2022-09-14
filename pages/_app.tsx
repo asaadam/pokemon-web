@@ -21,9 +21,23 @@ function MyApp({ Component, pageProps }: AppProps) {
       },
     }),
   });
+  const theme = extendTheme({
+    colors: {
+      pokemongreen: 'lightgreen',
+      pokemonblue: 'mediumturquoise',
+      pokemonbrown: 'navajowhite',
+      pokemongray: 'lightslategray',
+      pokemonpurple: 'mediumpurple',
+      pokemonred: 'tomato',
+      pokemonwhite: 'seashell',
+      pokemonyellow: 'lightyellow',
+      pokemonblack: 'slategray',
+      pokemonpink: 'pink',
+    },
+  });
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <ApolloProvider client={client}>
         <Component {...pageProps} />
       </ApolloProvider>

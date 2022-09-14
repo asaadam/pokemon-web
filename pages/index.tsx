@@ -13,7 +13,6 @@ const Home: NextPage = () => {
         <meta name="description" content="Pokedex Adam" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Heading>Welcome To Pokedex Adam</Heading>
       <HomePageContainer />
     </div>
   );

@@ -1,4 +1,4 @@
-import { VStack, Text, Badge, GridItem } from '@chakra-ui/react';
+import { VStack, Text, Badge, GridItem, Heading } from '@chakra-ui/react';
 import Image, { ImageLoaderProps } from 'next/image';
 import { PokemonData } from '../Module/HomePageContainer';
 import React from 'react';
@@ -15,17 +15,20 @@ type Props = {
 const PokemonPreview = React.forwardRef<HTMLDivElement, Props>(
   ({ pokemon }, ref) => (
     <GridItem
+      cursor={'pointer'}
       mx="auto"
       ref={ref}
       w="100%"
       maxWidth={'sm'}
       py="2"
-      bg={pokemon.color.name}
+      bg={`pokemon${pokemon.color.name}`}
       mt={4}
       borderRadius="2xl"
     >
       <VStack justifyContent="center" w="100%" color={'black'}>
-        <Text>{pokemon.name} </Text>
+        <Heading size={'sm'}>
+          {`${pokemon.name[0].toUpperCase()}${pokemon.name.slice(1)}`}
+        </Heading>
         <Image
           loader={imageUrl}
           src={pokemon.id.toString()}
