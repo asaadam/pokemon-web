@@ -1,8 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { DetailPokemon } from '../../Module/DetailPokemonContainer';
+import { useRouter } from 'next/router';
+import { PokemonComparasion } from '../../../Module/ComparePokemonContainer';
 
-const PokemonDetailPage: NextPage = () => {
+const PokemonComparasionPage: NextPage = () => {
+  const router = useRouter();
   return (
     <div>
       <Head>
@@ -10,9 +12,9 @@ const PokemonDetailPage: NextPage = () => {
         <meta name="description" content="Pokedex Adam" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <DetailPokemon />
+      <PokemonComparasion />
     </div>
   );
 };
 
-export default PokemonDetailPage;
+export default PokemonComparasionPage;

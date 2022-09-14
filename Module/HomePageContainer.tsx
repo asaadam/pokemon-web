@@ -1,5 +1,15 @@
 import { gql, useQuery } from '@apollo/client';
-import { Grid, Spinner, Text, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Checkbox,
+  Grid,
+  HStack,
+  Spinner,
+  Text,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
+import error from 'next/error';
 import { useRouter } from 'next/router';
 import { useCallback, useRef, useState } from 'react';
 import { PokemonPreview } from '../component/PokemonPreview';
@@ -42,6 +52,7 @@ type AllPokemonResultType = {
 function HomePageContainer() {
   const [offset, setOffset] = useState(0);
   const router = useRouter();
+  const [compare, setCompare] = useState<Array<string>>([]);
   const getPokemonData = gql`
     query getPokemonList(
       $offset: Int
@@ -102,7 +113,9 @@ function HomePageContainer() {
       type: router.query.type as Array<string>,
     },
   });
+
   const observer = useRef<IntersectionObserver | null>(null);
+  const toast = useToast();
 
   const lastDataRef = useCallback(
     (node: HTMLHeadingElement | null) => {
@@ -131,19 +144,63 @@ function HomePageContainer() {
 
   return (
     <VStack>
-      <PokemonFilterContainer />
+      <HStack>
+        <PokemonFilterContainer />
+        {compare.length && (
+          <Button
+            onClick={() => {
+              if (compare.length < 2) {
+                return toast({
+                  title: 'Error',
+                  status: 'error',
+                  description: 'Select one more',
+                });
+              }
+              router.push(`/compare/${compare[0]}/${compare[1]}`);
+            }}
+            colorScheme="blue"
+          >
+            Compare
+          </Button>
+        )}
+      </HStack>
       <Grid w="100%" maxWidth={'2xl'} templateColumns="repeat(2, 1fr)" gap={2}>
         {data?.pokemonList.map((pokemon, index) => {
-          if (data.pokemonList.length === index + 1) {
-            return (
+          return (
+            <VStack key={pokemon.id}>
+              <Checkbox
+                isChecked={
+                  compare.find((val) => val === pokemon.name) ? true : false
+                }
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    if (compare.length === 2) {
+                      return toast({
+                        title: 'Error',
+                        status: 'error',
+                        description: 'Maximum 2 pokemon',
+                      });
+                    }
+                    setCompare((v) => [...v, pokemon.name]);
+                  } else {
+                    setCompare((v) =>
+                      v.filter((value) => value !== pokemon.name)
+                    );
+                  }
+                }}
+              >
+                Select To Compare
+              </Checkbox>
               <PokemonPreview
-                key={pokemon.id}
-                ref={lastDataRef}
+                ref={
+                  data.pokemonList.length === index + 1
+                    ? lastDataRef
+                    : undefined
+                }
                 pokemon={pokemon}
               />
-            );
-          }
-          return <PokemonPreview pokemon={pokemon} key={pokemon.id} />;
+            </VStack>
+          );
         })}
       </Grid>
       {loading && <Spinner />}

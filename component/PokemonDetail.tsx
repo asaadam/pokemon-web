@@ -4,9 +4,10 @@ import { PokemonDetail } from '../Module/DetailPokemonContainer';
 
 type Props = {
   pokemonDetail: PokemonDetail;
+  isCompare?: boolean;
 };
 
-function PokemonDetailViewer({ pokemonDetail }: Props) {
+function PokemonDetailViewer({ pokemonDetail, isCompare = false }: Props) {
   return (
     <VStack>
       <VStack
@@ -15,6 +16,7 @@ function PokemonDetailViewer({ pokemonDetail }: Props) {
         p="4"
         px="8"
         backgroundColor="honeydew"
+        height={isCompare ? '250' : undefined}
       >
         <Heading size="md">Description</Heading>
         <Text>{pokemonDetail.description[0].text}</Text>
@@ -23,9 +25,9 @@ function PokemonDetailViewer({ pokemonDetail }: Props) {
         w="100%"
         borderRadius={'xl'}
         p="4"
-        px="8"
         backgroundColor="honeydew"
         alignItems={'flex-start'}
+        height={isCompare ? '250' : undefined}
       >
         <Heading alignSelf={'center'} size="md">
           Base Info
@@ -57,13 +59,7 @@ function PokemonDetailViewer({ pokemonDetail }: Props) {
           )}
         </Text>
       </VStack>
-      <VStack
-        w="100%"
-        borderRadius={'xl'}
-        p="4"
-        px="8"
-        backgroundColor="honeydew"
-      >
+      <VStack w="100%" borderRadius={'xl'} p="4" backgroundColor="honeydew">
         <Heading size="md">Base Stats</Heading>
         {pokemonDetail.pokemon_stats[0].base_stats.map((stat, index) => (
           <VStack key={`${stat.stat_name.name} ${index}`} w="100%">
