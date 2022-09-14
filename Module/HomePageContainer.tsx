@@ -1,7 +1,15 @@
 import { gql, useQuery } from '@apollo/client';
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Grid, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useCallback, useRef, useState } from 'react';
 import { PokemonPreview } from '../component/PokemonPreview';
+
+type PokemonType = {
+  pokemon_type: Array<{
+    type: {
+      name: string;
+    };
+  }>;
+};
 
 type PokemonData = {
   color: {
@@ -11,13 +19,7 @@ type PokemonData = {
   name: string;
   is_mythical: boolean;
   is_legendary: boolean;
-  pokemon_detail: Array<{
-    pokemon_type: Array<{
-      type: {
-        name: string;
-      };
-    }>;
-  }>;
+  pokemons_detail: Array<PokemonType>;
 };
 
 type AllPokemonFilter = {
@@ -84,7 +86,6 @@ function HomePageContainer() {
           entries[0].isIntersecting &&
           data?.species_aggregate.aggregate.count !== data?.pokemonList.length
         ) {
-          // console.log('Hey');
           setOffset((v) => {
             const current = v + 20;
             fetchMore({ variables: { offset: current } });
@@ -100,8 +101,8 @@ function HomePageContainer() {
   );
 
   return (
-    <div style={{ height: 100 }}>
-      <Box>
+    <VStack>
+      <Grid w="100%" maxWidth={'2xl'} templateColumns="repeat(2, 1fr)" gap={2}>
         {data?.pokemonList.map((pokemon, index) => {
           if (data.pokemonList.length === index + 1) {
             return (
@@ -114,12 +115,12 @@ function HomePageContainer() {
           }
           return <PokemonPreview pokemon={pokemon} key={pokemon.id} />;
         })}
-        {loading && <Spinner />}
-        {error && <Text>{error.stack}</Text>}
-      </Box>
-    </div>
+      </Grid>
+      {loading && <Spinner />}
+      {error && <Text>{error.stack}</Text>}
+    </VStack>
   );
 }
 
 export { HomePageContainer };
-export type { PokemonData };
+export type { PokemonData, PokemonType };

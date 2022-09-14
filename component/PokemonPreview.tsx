@@ -1,7 +1,8 @@
-import { VStack, Text, Badge } from '@chakra-ui/react';
+import { VStack, Text, Badge, GridItem } from '@chakra-ui/react';
 import Image, { ImageLoaderProps } from 'next/image';
 import { PokemonData } from '../Module/HomePageContainer';
 import React from 'react';
+import { PokemonTypeBadge } from './PokemonTypeBadge';
 
 const imageUrl = ({ src }: ImageLoaderProps) => {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${src}.png`;
@@ -13,14 +14,17 @@ type Props = {
 
 const PokemonPreview = React.forwardRef<HTMLDivElement, Props>(
   ({ pokemon }, ref) => (
-    <div ref={ref}>
-      <VStack
-        justifyContent="center"
-        width={300}
-        height={300}
-        backgroundColor={pokemon.color}
-        color={'black'}
-      >
+    <GridItem
+      mx="auto"
+      ref={ref}
+      w="100%"
+      maxWidth={'sm'}
+      py="2"
+      bg={pokemon.color.name}
+      mt={4}
+      borderRadius="2xl"
+    >
+      <VStack justifyContent="center" w="100%" color={'black'}>
         <Text>{pokemon.name} </Text>
         <Image
           loader={imageUrl}
@@ -29,10 +33,9 @@ const PokemonPreview = React.forwardRef<HTMLDivElement, Props>(
           height={100}
           alt="test"
         />
-
-        <Badge variant="solid">Success</Badge>
+        <PokemonTypeBadge pokemonType={pokemon.pokemons_detail} />
       </VStack>
-    </div>
+    </GridItem>
   )
 );
 
