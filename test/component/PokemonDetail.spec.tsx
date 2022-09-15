@@ -100,4 +100,22 @@ describe('Test Pokemon Detail', () => {
     );
     expect(pokemonDescription).toBeInTheDocument();
   });
+  test('should show valid base info', () => {
+    render(<PokemonDetailViewer pokemonDetail={pokemonData} />);
+
+    expect(screen.getByText(/1 m/i)).toBeInTheDocument();
+    expect(screen.getByText(/13 kg/i)).toBeInTheDocument();
+    expect(screen.getByText(/chlorophyll , overgrow/i)).toBeInTheDocument();
+  });
+
+  test('should show valid base stats', () => {
+    render(<PokemonDetailViewer pokemonDetail={pokemonData} />);
+
+    expect(screen.getByTestId('progresshp')).toBeInTheDocument();
+    expect(screen.getByTestId('progressattack')).toBeInTheDocument();
+    expect(screen.getByTestId('progressdefense')).toBeInTheDocument();
+    expect(screen.getByTestId('progressspecial-attack')).toBeInTheDocument();
+    expect(screen.getByTestId('progressspecial-defense')).toBeInTheDocument();
+    expect(screen.getByTestId('progressspeed')).toBeInTheDocument();
+  });
 });

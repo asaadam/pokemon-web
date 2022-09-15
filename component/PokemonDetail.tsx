@@ -65,6 +65,7 @@ function PokemonDetailViewer({ pokemonDetail, isCompare = false }: Props) {
           <VStack key={`${stat.stat_name.name} ${index}`} w="100%">
             <Text>{stat.stat_name.name}</Text>
             <Progress
+              data-testId={`progress${stat.stat_name.name}`}
               colorScheme="purple"
               borderRadius={'lg'}
               value={stat.base_stat}
