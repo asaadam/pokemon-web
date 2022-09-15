@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { AddIcon } from '@chakra-ui/icons';
 import {
   Badge,
+  Text,
   Button,
   Drawer,
   DrawerBody,
@@ -114,6 +115,11 @@ function PokemonFilterContainer() {
           <DrawerHeader>Filter Pokemon</DrawerHeader>
 
           <DrawerBody>
+            {error?.networkError ? (
+              <Text>Please check your internet connection</Text>
+            ) : (
+              <Text>{error?.stack}</Text>
+            )}
             <Heading size="md">Type</Heading>
             <Wrap alignItems="flex-start" my="4">
               {data?.typeList.map((type) => (

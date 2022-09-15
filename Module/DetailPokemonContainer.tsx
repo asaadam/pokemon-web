@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { Spinner, VStack } from '@chakra-ui/react';
+import { Spinner, VStack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { PokemonPreview } from '../component/PokemonPreview';
 import { PokemonData, PokemonType } from './HomePageContainer';
@@ -107,6 +107,11 @@ function DetailPokemon() {
           <PokemonPreview pokemon={data.pokemonList[0]} />
           <PokemonDetailViewer pokemonDetail={data.pokemonList[0]} />
         </VStack>
+      )}
+      {error?.networkError ? (
+        <Text>Please check your internet connection</Text>
+      ) : (
+        <Text>{error?.stack}</Text>
       )}
     </VStack>
   );

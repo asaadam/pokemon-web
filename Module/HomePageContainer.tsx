@@ -212,7 +212,11 @@ function HomePageContainer() {
         })}
       </Grid>
       {loading && <Spinner />}
-      {error && <Text>{error.stack}</Text>}
+      {error?.networkError ? (
+        <Text>Please check your internet connection</Text>
+      ) : (
+        <Text>{error?.stack}</Text>
+      )}
     </VStack>
   );
 }
