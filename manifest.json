@@ -1,0 +1,17 @@
+{
+  "name": "Pokedex Adam",
+  "short_name": "Pokedex",
+  "icons": [
+    {
+      "src": "/public/vercel.svg",
+      "sizes": "192x192",
+      "type": "image/svg",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
