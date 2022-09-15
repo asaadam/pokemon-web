@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { VStack, Spinner, HStack } from '@chakra-ui/react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { PokemonDetailViewer } from '../component/PokemonDetail';
 import { PokemonPreview } from '../component/PokemonPreview';
@@ -74,12 +75,13 @@ function PokemonComparasion() {
 
   return (
     <VStack maxW={'lg'} mx="auto" mt="4">
-      <ArrowBackIcon
-        onClick={router.back}
-        cursor="pointer"
-        fontSize={'24'}
-        alignSelf={'flex-start'}
-      />
+      <Link href="/" scroll={false}>
+        <ArrowBackIcon
+          cursor="pointer"
+          fontSize={'24'}
+          alignSelf={'flex-start'}
+        />
+      </Link>
       {loading && <Spinner />}
       {data && (
         <HStack>

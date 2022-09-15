@@ -144,7 +144,15 @@ function HomePageContainer() {
 
   return (
     <VStack>
-      <HStack>
+      <HStack
+        w="100vw"
+        justifyContent="center"
+        position="sticky"
+        top="0"
+        backgroundColor="white"
+        zIndex="2"
+        py="4"
+      >
         <PokemonFilterContainer />
         {compare.length && (
           <Button

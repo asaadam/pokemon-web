@@ -5,6 +5,7 @@ import { PokemonPreview } from '../component/PokemonPreview';
 import { PokemonData, PokemonType } from './HomePageContainer';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { PokemonDetailViewer } from '../component/PokemonDetail';
+import Link from 'next/link';
 
 const getPokemonDetail = gql`
   query getPokemonDetail($pokemonName: String) {
@@ -93,12 +94,13 @@ function DetailPokemon() {
 
   return (
     <VStack maxW={'lg'} mx="auto" mt="4">
-      <ArrowBackIcon
-        onClick={router.back}
-        cursor="pointer"
-        fontSize={'24'}
-        alignSelf={'flex-start'}
-      />
+      <Link href="/" scroll={false}>
+        <ArrowBackIcon
+          cursor="pointer"
+          fontSize={'24'}
+          alignSelf={'flex-start'}
+        />
+      </Link>
       {loading && <Spinner />}
       {data && (
         <VStack>
