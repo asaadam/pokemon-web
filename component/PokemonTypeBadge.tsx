@@ -7,7 +7,7 @@ type Props = {
 
 function PokemonTypeBadge({ pokemonType }: Props) {
   return (
-    <HStack>
+    <HStack data-testid="pokemonType">
       {pokemonType[0].pokemon_type.map((type, index) => (
         <Badge key={`${type.type.name} ${index} `} variant="solid">
           {type.type.name}

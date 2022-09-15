@@ -17,6 +17,7 @@ const PokemonPreview = React.forwardRef<HTMLDivElement, Props>(
   ({ pokemon }, ref) => (
     <Link href={`/pokemon/${pokemon.name}`}>
       <GridItem
+        data-testid="pokemonBackground"
         cursor={'pointer'}
         mx="auto"
         ref={ref}
